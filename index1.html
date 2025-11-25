@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <title>Click & Go - Solutions de Distribution Automatique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. RESET & VARIABLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary-color: #32316e;
+            --accent-color: #d78736;
+            --accent-hover: #d35400;
+            --light-bg: #ffffff;
+            --grey-bg: #f4f6f7;
+            --text-color: #333;
+            --shadow-card: 0 10px 20px rgba(0,0,0,0.08);
+            --header-height: 80px;
+        }
+
+        html { scroll-behavior: smooth; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; /* Police plus moderne */
+            line-height: 1.6; 
+            color: var(--text-color); 
+            background-color: var(--light-bg); 
+            /* Pour éviter que le header fixe ne cache le haut du contenu lors du scroll */
+            padding-top: var(--header-height); 
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+        h1, h2, h3 { color: var(--primary-color); font-weight: 700; line-height: 1.2; }
+
+        /* --- 2. HEADER & NAVIGATION --- */
+        header { 
+            background: rgba(255, 255, 255, 0.95); /* Légère transparence */
+            backdrop-filter: blur(10px); /* Effet de flou derrière */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            left: 0;
+            z-index: 1000; 
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary-color); display: flex; align-items: center; gap: 10px; }
+        .logo span { color: var(--accent-color); }
+        /* J'ai remplacé l'image par du texte stylisé au cas où l'image manque, mais tu peux remettre ton <img> */
+        
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { font-weight: 500; font-size: 0.95rem; color: var(--primary-color); }
+        .nav-links a:hover { color: var(--accent-color); }
+
+        .btn-cta { 
+            background-color: var(--accent-color); 
+            color: white !important; 
+            padding: 0.6rem 1.5rem; 
+            border-radius: 50px; /* Bouton arrondi */
+            font-weight: 600; 
+            box-shadow: 0 4px 6px rgba(230, 126, 34, 0.3);
+        }
+        .btn-cta:hover { background-color: var(--accent-hover); transform: translateY(-2px); }
+
+        /* --- 3. BURGER MENU ANIMATION --- */
+        .burger { display: none; cursor: pointer; }
+        .burger div { 
+            width: 25px; height: 3px; background-color: var(--primary-color); margin: 5px; 
+            transition: all 0.3s ease; 
+        }
+
+        /* Animation croix */
+        .toggle .line1 { transform: rotate(-45deg) translate(-5px, 6px); }
+        .toggle .line2 { opacity: 0; }
+        .toggle .line3 { transform: rotate(45deg) translate(-5px, -6px); }
+
+        /* --- 4. HERO SECTION --- */
+        .hero {
+            /* Image de fond depuis Unsplash pour la démo */
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.7)),
+                        url('couvertureacc.jpg');
+            background-size: cover; background-position: center; 
+            height: calc(100vh - var(--header-height)); /* Prend tout l'écran moins le header */
+            display: flex; align-items: center; justify-content: center; 
+            text-align: center; color: white; padding: 0 1rem;
+            margin-top: -1px; /* Correctif visuel */
+        }
+        .hero-content h1 { color: white; font-size: 3.5rem; margin-bottom: 1rem; }
+        .hero-content p { font-size: 1.2rem; margin-bottom: 2.5rem; max-width: 600px; margin-inline: auto; opacity: 0.9; }
+
+        /* --- 5. SOLUTIONS & CARDS --- */
+        .section { padding: 6rem 5%; max-width: 1200px; margin: 0 auto; }
+        .text-center { text-align: center; margin-bottom: 4rem; }
+        .text-center p { color: #666; font-size: 1.1rem; margin-top: 0.5rem; }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; }
+
+        .card { 
+            background: white; border-radius: 15px; overflow: hidden; 
+            box-shadow: var(--shadow-card); transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            border: 1px solid #eee;
+        }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.12); }
+
+        .card-img { height: 220px; background-size: cover; background-position: center; }
+        
+        .card-content { padding: 2rem; }
+        .card-content h3 { margin-bottom: 1rem; color: var(--primary-color); }
+        .card-content ul li { margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative; color: #555; }
+        /* Puce personnalisée */
+        .card-content ul li::before { 
+            content: "✓"; color: var(--accent-color); font-weight: bold; 
+            position: absolute; left: 0; 
+        }
+
+        /* --- 6. AVANTAGES --- */
+        .bg-grey { background-color: var(--grey-bg); border-radius: 30px; margin-block: 2rem; }
+        
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+        
+        .feature-item { 
+            background: white; padding: 2.5rem 1.5rem; border-radius: 20px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: 0.3s; 
+            text-align: center;
+        }
+        .feature-item:hover { transform: translateY(-5px); }
+        
+        .icon-box { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+        /* --- 7. CONTACT FORM --- */
+        .contact-container { display: flex; flex-wrap: wrap; gap: 4rem; align-items: flex-start; }
+        .contact-info { flex: 1; min-width: 300px; background: var(--primary-color); color: white; padding: 3rem; border-radius: 20px; }
+        .contact-info h3 { color: white; margin-bottom: 1.5rem; }
+        .contact-info p { margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; }
+        
+        .contact-form { flex: 1.5; min-width: 300px; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+        
+        .form-group input, .form-group textarea { 
+            width: 100%; padding: 1rem; border: 2px solid #eee; border-radius: 8px; 
+            font-family: inherit; transition: 0.3s; 
+        }
+        .form-group input:focus, .form-group textarea:focus { 
+            border-color: var(--accent-color); outline: none; 
+        }
+        
+        button[type="submit"] { 
+            width: 100%; padding: 1rem; background-color: var(--primary-color); 
+            color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; 
+            cursor: pointer; transition: 0.3s; 
+        }
+        button[type="submit"]:hover { background-color: #34495e; }
+
+        /* --- 8. FOOTER --- */
+        footer { background: var(--primary-color); color: white; text-align: center; padding: 3rem 1rem; margin-top: 4rem; }
+        footer p { opacity: 0.8; margin-bottom: 0.5rem; }
+        footer small { opacity: 0.5; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            
+            .burger { display: block; z-index: 1001; }
+            
+            .nav-links {
+                position: fixed; top: 0; right: 0; height: 100vh; width: 70%;
+                background-color: white; flex-direction: column; justify-content: center;
+                transform: translateX(100%); transition: transform 0.4s ease-in-out;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            }
+            .nav-active { transform: translateX(0%); }
+            .nav-links a { font-size: 1.2rem; margin: 1.5rem 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                Click<span>& Go</span>
+            </div>
+
+            <div class="nav-links">
+                <a href="#accueil">Accueil</a>
+                <a href="#solutions">Solutions</a>
+                <a href="#avantages">Avantages</a>
+                <a href="#contact" class="btn-cta">Demander un Devis</a>
+            </div>
+
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <section id="accueil" class="hero">
+        <div class="hero-content">
+            <h1>Vos pauses café,<br>simplement meilleures.</h1>
+            <p>Installation, gestion et maintenance de distributeurs automatiques modernes pour entreprises et lieux publics.</p>
+            <a href="#contact" class="btn-cta">Obtenir une offre gratuite</a>
+        </div>
+    </section>
+
+    <section id="solutions" class="section">
+        <div class="text-center">
+            <h2>Nos Solutions</h2>
+            <p>Des machines performantes adaptées à la taille de votre structure.</p>
+        </div>
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-img" style="background-image: url('machinecafe.jpeg')"></div>
+                <div class="card-content">
+                    <h3>Boissons Chaudes</h3>
+                    <ul>
+                        <li>Café grains & capsules</li>
+                        <li>Chocolat chaud onctueux</li>
+                        <li>Thés et infusions bio</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img" style="background-image: url('snacks.jpeg');"></div>
+                <div class="card-content">
+                    <h3>Snacks & Frais</h3>
+                    <ul>
+                        <li>Snacking Salé</li>
+                        <li>Snacking Sucré</li>
+                        <li>Boissons fraîches</li>
+                    </ul>
+                </div>
+            </div>
+            <!--<div class="card">
+                <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1548839140-29a749e1cf4d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');"></div>
+                <div class="card-content">
+                    <h3>Fontaines à Eau</h3>
+                    <ul>
+                        <li>Eau fraîche filtrée</li>
+                        <li>Eau pétillante ou chaude</li>
+                        <li>Zéro déchet plastique</li>
+                    </ul>
+                </div>
+            </div> -->
+        </div>
+    </section>
+
+    <section id="avantages" class="section bg-grey">
+        <div class="text-center">
+            <h2>Pourquoi nous choisir ?</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-item">
+                <span class="icon-box">⚙️</span>
+                <h3>Maintenance 4h</h3>
+                <p>Intervention rapide garantie en cas de panne technique.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon-box">💳</span>
+                <h3>Multi-Paiement</h3>
+                <p>Sans contact, CB, Espèces, Badge entreprise.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon-box">🌱</span>
+                <h3>Eco-Responsable</h3>
+                <p>Produits Bio, locaux et gobelets recyclables.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon-box">📝</span>
+                <h3>Sans Engagement</h3>
+                <p>Contrats flexibles et transparents.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div class="text-center">
+            <h2>Contactez-nous</h2>
+            <p>Une question ou un projet ? Réponse sous 24h.</p>
+        </div>
+
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Nos Coordonnées</h3>
+                <p>📞 01 23 45 67 89</p>
+                <p>📧 contact@clickandgo.fr</p>
+                <p>📍 10 Rue de l'Exemple, Paris</p>
+                <br>
+                <p><small>SIRET : 123 456 789 00000</small></p>
+            </div>
+
+            <div class="contact-form">
+                <form action="https://formspree.io/f/mldvkrvj" method="POST">
+                    <div class="form-group">
+                        <label for="name">Nom Complet</label>
+                        <input type="text" id="name" name="nom" required placeholder="Votre nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Entreprise</label>
+                        <input type="text" id="company" name="societe" placeholder="Nom de la société">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="nom@entreprise.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Téléphone</label>
+                        <input type="tel" id="phone" name="telephone" required placeholder="06 12 34 56 78">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Comment pouvons-nous vous aider ?</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Détails de votre demande..."></textarea>
+                    </div>
+                    <button type="submit">Envoyer la demande</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Click & Go. Tous droits réservés.</p>
+            <p><small><a href="#">Mentions Légales</a> - <a href="#">CGV</a></small></p>
+        </div>
+    </footer>
+
+    <script>
+        const burger = document.querySelector('.burger');
+        const nav = document.querySelector('.nav-links');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        burger.addEventListener('click', () => {
+            // Activer le menu latéral
+            nav.classList.toggle('nav-active');
+            
+            // Animation du burger en croix
+            burger.classList.toggle('toggle');
+        });
+
+        // Fermer le menu quand on clique sur un lien
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('nav-active');
+                burger.classList.remove('toggle'); // Remet le burger en normal
+            });
+        });
+    </script>
+
+</body>
+</html>
